@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 type UserWithoutPassword = Omit<User, 'password'>;
@@ -14,13 +14,14 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<UserWithoutPassword> {
     const hashedPassword = await this.encriptPassword(createUserDto.password);
 
+    await this.checkIfEmailExists(createUserDto.email);
+
     const user = await this.prismaService.user.create({
       data: {
         ...createUserDto,
         password: hashedPassword,
       },
     });
-
     return this.removePassword(user);
   }
 
@@ -61,8 +62,28 @@ export class UsersService {
     });
   }
 
+  async findBy(params: {
+    where?: Prisma.UserWhereInput;
+  }): Promise<UserWithoutPassword[]> {
+    return await this.prismaService.user.findMany({
+      where: params.where,
+    });
+  }
+
   async encriptPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 10);
+  }
+
+  async checkIfEmailExists(email: string): Promise<void> {
+    const user = await this.findBy({
+      where: {
+        email,
+      },
+    });
+
+    if (user) {
+      throw new BadRequestException('E-mail já cadastrado');
+    }
   }
 
   removePassword(user: User): UserWithoutPassword {
