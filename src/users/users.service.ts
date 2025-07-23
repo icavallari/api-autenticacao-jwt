@@ -14,20 +14,22 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<UserWithoutPassword> {
     const hashedPassword = await this.encriptPassword(createUserDto.password);
 
-    return await this.prismaService.user.create({
+    const user = await this.prismaService.user.create({
       data: {
         ...createUserDto,
         password: hashedPassword,
       },
     });
+
+    return this.removePassword(user);
   }
 
-  async findAll(): Promise<Partial<UserWithoutPassword>[]> {
+  async findAll(): Promise<UserWithoutPassword[]> {
     const users = await this.prismaService.user.findMany();
     return users.map((user) => this.removePassword(user));
   }
 
-  async findOne(id: string): Promise<Partial<UserWithoutPassword> | null> {
+  async findOne(id: string): Promise<UserWithoutPassword | null> {
     const user = await this.prismaService.user.findUnique({
       where: { id },
     });
@@ -38,7 +40,7 @@ export class UsersService {
   async update(
     id: string,
     updateUserDto: UpdateUserDto,
-  ): Promise<Partial<UserWithoutPassword>> {
+  ): Promise<UserWithoutPassword> {
     if (updateUserDto.password) {
       updateUserDto.password = await this.encriptPassword(
         updateUserDto.password,

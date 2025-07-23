@@ -9,7 +9,7 @@ POST http://localhost:3001/users
 Content-Type: application/json
 
 {
-  "name": "John Doe",
+  "name": "John Doe2",
   "email": "john.doe@example.com",
   "password": "123456"
 }
