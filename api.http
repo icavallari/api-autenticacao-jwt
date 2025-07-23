@@ -1,0 +1,27 @@
+###
+GET http://localhost:3001/
+
+### get all users
+GET http://localhost:3001/users
+
+### create user
+POST http://localhost:3001/users
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "password": "123456"
+}
+
+### get user
+GET http://localhost:3001/users/cmdfxeg8900001j98139kdhpi
+
+### update user
+PATCH http://localhost:3001/users/cmdfxeg8900001j98139kdhpi
+Content-Type: application/json
+
+{
+  "email": "john.doe@example2.com",
+  "password": "newpassword123"
+}
