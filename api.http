@@ -39,7 +39,7 @@ Content-Type: application/json
 ### create variable to use token
 @token = {{ login.response.body.access_token }}
 
-###
-POST http://localhost:3000/posts
+### endpoint authorization test
+GET http://localhost:3001/users/cmdfxeg8900001j98139kdhpi
 Content-Type: application/json
 Authorization: Bearer {{token}}
