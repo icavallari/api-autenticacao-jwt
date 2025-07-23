@@ -63,7 +63,7 @@ export class UsersService {
     return await bcrypt.hash(password, 10);
   }
 
-  removePassword(user: User): Partial<User> {
+  removePassword(user: User): UserWithoutPassword {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword;
