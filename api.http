@@ -25,3 +25,21 @@ Content-Type: application/json
   "email": "john.doe@example2.com",
   "password": "newpassword123"
 }
+
+### login
+# @name login
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example2.com",
+  "password": "newpassword123"
+}
+
+### create variable to use token
+@token = {{ login.response.body.access_token }}
+
+###
+POST http://localhost:3000/posts
+Content-Type: application/json
+Authorization: Bearer {{token}}
